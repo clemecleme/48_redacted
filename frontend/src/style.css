@@ -12,18 +12,23 @@
   box-sizing: border-box;
 }
 
-/* TSUKI Color Variables */
+html {
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Color Variables - Investigation Theme */
 :root {
-  /* TSUKI Colors */
-  --main-color: #FFDF9B;
-  --accent-color: #FF9B9B;
-  --inverse-color: #518EE2;
-  --positive-color: #61DE61;
-  --negative-color: #FF9B9B;
+  /* Main colors - White / Green / Blue-grey */
+  --main-color: #ffffff;           /* White for primary text */
+  --accent-color: #097d26;         /* Bright green for accents */
+  --inverse-color: #6b8cae;        /* Blue-grey */
+  --positive-color: #097d26;       /* Green for success */
+  --negative-color: #ff0040;       /* Red for errors */
   
   /* === KEY BOARD COLOR - CHANGE THIS ONE LINE TO UPDATE EVERYWHERE === */
-  --board-accent: #445773; /* Main color for nodes, edges, handles, overlays */
-  --board-accent-rgb: 25, 87, 96; /* Same color in RGB format for rgba() */
+  --board-accent: #097d26;         /* Main color for nodes, edges, handles, overlays */
+  --board-accent-rgb: 0, 255, 65;  /* Same color in RGB format for rgba() */
   
   /* Dark backgrounds - Pure Black */
   --bg-primary: #000000;
@@ -31,29 +36,34 @@
   --bg-tertiary: #0a0a0a;
   --bg-window: #000000;
   
-  /* Accent colors - TSUKI style */
-  --accent-green: #61DE61;
-  --accent-cyan: #518EE2;
-  --accent-blue: #518EE2;
-  --accent-amber: #FFDF9B;
-  --accent-red: #FF9B9B;
+  /* Accent colors */
+  --accent-green: #00ff41;
+  --accent-cyan: #6b8cae;
+  --accent-blue: #6b8cae;
+  --accent-amber: #ffffff;
+  --accent-red: #ff0040;
   
-  /* Text colors - TSUKI */
-  --text-primary: #FFDF9B;
-  --text-secondary: #FFF;
-  --text-muted: #CCC;
-  --text-dim: #999;
+  /* Text colors */
+  --text-primary: #ffffff;         /* White primary text */
+  --text-secondary: #b0b0b0;       /* Grey secondary text */
+  --text-muted: #808080;
+  --text-dim: #606060;
   
   /* Border colors */
-  --border-color: #FFDF9B;
-  --border-light: #FFF;
-  --border-accent: #FFDF9B;
+  --border-color: #00ff41;         /* Green borders */
+  --border-light: #ffffff;         /* White borders */
+  --border-accent: #00ff41;        /* Green accent borders */
   
   /* Legacy dark theme colors for compatibility */
   --dark-950: #000000;
   --dark-900: #000000;
   --dark-800: #000000;
   --dark-700: #0a0a0a;
+  
+  /* Terminal colors */
+  --terminal-green: #00ff41;
+  --terminal-amber: #ffffff;
+  --terminal-red: #ff0040;
 }
 
 body {
@@ -63,6 +73,9 @@ body {
   background-color: #000;
   color: var(--main-color);
   min-height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 /* Selection style - TSUKI */
@@ -1962,13 +1975,652 @@ nav a.active {
   padding: 1.5rem;
 }
 
+/* Demo Mode floating button */
+.demo-mode-floating {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  background: var(--landing-blue-dark);
+  border: 1px solid var(--landing-blue-light);
+  color: var(--landing-blue-light);
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.7rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-mode-floating:hover {
+  background: var(--landing-blue-light);
+  color: #000;
+}
+
 /* ========================================
-   DETECTIVE BOARD - RESTORED WORKING VERSION
+   MISSIONS PAGE - Board Style Cards
+   ======================================== */
+
+.missions-page {
+  position: relative;
+  min-height: 100vh;
+  background: #000;
+  padding-top: 80px; /* Space for header */
+  --landing-blue-light: #5a7fa3; /* Same as landing page */
+  --landing-blue-dark: #1a2332;  /* Same as landing page */
+}
+
+/* Scanline effect for missions page */
+.missions-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Moving scanline bar for missions page */
+.missions-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(90, 127, 163, 0.1) 50%,
+      transparent 100%
+    );
+  background-size: 100% 200px;
+  pointer-events: none;
+  z-index: 1;
+  animation: scanlineMove 8s linear infinite;
+}
+
+.missions-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  position: relative;
+  z-index: 2;
+}
+
+/* Mission-specific styles */
+.landing-window:hover {
+  /* No hover effect - disabled */
+}
+
+.mission-registered {
+  position: absolute;
+  right: 2rem;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.mission-btn {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.85rem;
+  padding: 0.6rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid;
+}
+
+.mission-btn-primary {
+  background: var(--landing-blue-dark);
+  border-color: var(--landing-blue-light);
+  color: var(--landing-blue-light);
+}
+
+.mission-btn-primary:hover {
+  background: var(--landing-blue-light);
+  color: #000;
+}
+
+.mission-btn-secondary {
+  background: #000;
+  border-color: #808080;
+  color: #808080;
+}
+
+.mission-btn-secondary:hover {
+  background: #808080;
+  color: #000;
+}
+
+/* ========================================
+   LANDING PAGE - Board Style Windows
+   ======================================== */
+
+.landing-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000 url('/images/background_landing.png') center center no-repeat;
+  background-size: cover;
+  overflow: hidden;
+  --landing-blue-light: #5a7fa3; /* Lighter blue for borders */
+  --landing-blue-dark: #1a2332;  /* Much darker blue for window backgrounds */
+}
+
+/* Hide scrollbars on landing page */
+.landing-page::-webkit-scrollbar {
+  display: none;
+}
+
+.landing-page {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Scanline effect overlay - Tsuki Radio style */
+.landing-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Moving scanline bar */
+.landing-page::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(90, 127, 163, 0.1) 50%,
+      transparent 100%
+    );
+  background-size: 100% 200px;
+  pointer-events: none;
+  z-index: 99;
+  animation: scanlineMove 8s linear infinite;
+}
+
+@keyframes scanlineMove {
+  0% {
+    background-position: 0 -200px;
+  }
+  100% {
+    background-position: 0 100vh;
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.27861;
+  }
+  5% {
+    opacity: 0.34769;
+  }
+  10% {
+    opacity: 0.23604;
+  }
+  15% {
+    opacity: 0.90626;
+  }
+  20% {
+    opacity: 0.18128;
+  }
+  25% {
+    opacity: 0.83891;
+  }
+  30% {
+    opacity: 0.65583;
+  }
+  35% {
+    opacity: 0.67807;
+  }
+  40% {
+    opacity: 0.26559;
+  }
+  45% {
+    opacity: 0.84693;
+  }
+  50% {
+    opacity: 0.96019;
+  }
+  55% {
+    opacity: 0.08594;
+  }
+  60% {
+    opacity: 0.20313;
+  }
+  65% {
+    opacity: 0.71988;
+  }
+  70% {
+    opacity: 0.53455;
+  }
+  75% {
+    opacity: 0.37288;
+  }
+  80% {
+    opacity: 0.71428;
+  }
+  85% {
+    opacity: 0.70419;
+  }
+  90% {
+    opacity: 0.7003;
+  }
+  95% {
+    opacity: 0.36108;
+  }
+  100% {
+    opacity: 0.24387;
+  }
+}
+
+/* SVG edges layer */
+.landing-edges {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10; /* Above windows */
+  pointer-events: none;
+}
+
+/* Base window style - reuses board node styles */
+.landing-window {
+  background: var(--landing-blue-dark);
+  border: 2px solid var(--landing-blue-light);
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Scanline effect on mission cards - specific class */
+.mission-card-window::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Moving scanline bar on mission cards */
+.mission-card-window::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(90, 127, 163, 0.1) 50%,
+      transparent 100%
+    );
+  background-size: 100% 200px;
+  pointer-events: none;
+  z-index: 99;
+  animation: scanlineMove 8s linear infinite;
+}
+
+/* Landing page specific positioning */
+.landing-page .landing-window {
+  position: absolute;
+  z-index: 2;
+}
+
+@keyframes windowGlitch {
+  0%, 90%, 100% {
+    transform: translate(0, 0);
+  }
+  91% {
+    transform: translate(-2px, 1px);
+  }
+  92% {
+    transform: translate(2px, -1px);
+  }
+  93% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Override node-header for landing windows to have fixed height */
+.landing-window .node-header {
+  background: #12365d;
+  min-height: 32px;
+  height: 32px;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: default;
+  z-index: 101; /* Above scanlines */
+}
+
+/* Close button for landing windows */
+.landing-window .node-close-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  background: #ff0000;
+  color: #000;
+  border: none;
+  font-size: 14px;
+  line-height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 102; /* Above everything */
+}
+
+/* Connection handle for landing page windows */
+.landing-page .landing-window::before {
+  content: '';
+  position: absolute;
+  top: 11px; /* Centered in 32px header: (32 - 12) / 2 = 10px, +1 for adjustment */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--landing-blue-light);
+  border: 2px solid #000;
+  z-index: 11;
+  animation: handlePulse 2s ease-in-out infinite;
+}
+
+/* Override scanline for landing page - add connection handle */
+.landing-page .landing-window::after {
+  display: none; /* No moving scanline on landing page windows */
+}
+
+@keyframes handlePulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Text animations for landing windows */
+.landing-window .node-title {
+  animation: textGlitch 3s infinite;
+  font-size: 0.65rem !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.05em;
+  padding-left: 0.25rem !important;
+}
+
+@keyframes textGlitch {
+  0%, 95%, 100% {
+    text-shadow: none;
+  }
+  96% {
+    text-shadow: 
+      2px 0 var(--landing-blue-light),
+      -2px 0 cyan;
+  }
+  97% {
+    text-shadow: 
+      -2px 0 var(--landing-blue-light),
+      2px 0 cyan;
+  }
+  98% {
+    text-shadow: none;
+  }
+}
+
+/* Typing animation for title */
+.landing-window-title h1 {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 2s steps(12) 1s forwards;
+  width: 0;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--landing-blue-light);
+  }
+}
+
+/* Subtitle fade in */
+.landing-window-title .hero-subtitle {
+  animation: fadeInUp 1s ease-out 3s forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Description fade in */
+.landing-window-title p:last-child {
+  animation: fadeInUp 1s ease-out 4s forwards;
+  opacity: 0;
+}
+
+/* Visual window image static effect */
+.landing-window-visual img {
+  animation: imageStatic 0.1s infinite;
+}
+
+@keyframes imageStatic {
+  0% {
+    filter: brightness(1) contrast(1);
+  }
+  50% {
+    filter: brightness(1.02) contrast(1.05);
+  }
+  100% {
+    filter: brightness(0.98) contrast(0.95);
+  }
+}
+
+/* Window 1: Title - Top Left */
+.landing-window-title {
+  top: 20vh;
+  left: 10vw;
+  width: 400px;
+  max-width: 35vw;
+}
+
+/* Window 2: Visual - Center Bottom */
+.landing-window-visual {
+  top: 55vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 350px;
+  max-width: 30vw;
+  height: 250px;
+}
+
+/* Window 3: Connect - Top Right */
+.landing-window-connect {
+  top: 25vh;
+  right: 10vw;
+  width: 380px;
+  max-width: 35vw;
+}
+
+/* Central node - single centered window */
+.landing-window-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 550px;
+  max-width: 90vw;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .landing-window-title {
+    left: 5vw;
+    max-width: 40vw;
+  }
+  
+  .landing-window-connect {
+    right: 5vw;
+    max-width: 40vw;
+  }
+  
+  .landing-window-visual {
+    max-width: 35vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-window {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: 90vw !important;
+    max-width: 90vw !important;
+    margin: 1rem auto;
+  }
+  
+  .landing-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .landing-edges {
+    display: none; /* Hide edges on mobile */
+  }
+  
+  .landing-window-visual {
+    height: 200px;
+  }
+}
+
+/* ========================================
+   BOARD PAGE LAYOUT
+   ======================================== */
+
+.board-page {
+  --landing-blue-light: #5a7fa3; /* Same as landing page */
+  --landing-blue-dark: #1a2332;  /* Same as landing page */
+}
+
+.board-header {
+  background: #000;
+  border-bottom: none;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.board-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.board-title {
+  font-family: 'Courier Prime', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.board-question {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ========================================
+   DOCUMENT SIDEBAR - Simplified Windows-style List
    ======================================== */
 
 .document-sidebar {
-  width: 280px;
-  background: var(--dark-900);
+  width: 220px;
+  background: #000;
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
@@ -1976,10 +2628,29 @@ nav a.active {
   overflow-y: auto;
 }
 
+/* Custom scrollbar for sidebar */
+.document-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.document-sidebar::-webkit-scrollbar-track {
+  background: #000;
+  border-left: 1px solid #222;
+}
+
+.document-sidebar::-webkit-scrollbar-thumb {
+  background: #333;
+  border: 1px solid #222;
+}
+
+.document-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
 .sidebar-header {
-  background: var(--dark-800);
+  background: #000;
   border-bottom: 1px solid var(--border-color);
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1988,65 +2659,152 @@ nav a.active {
   z-index: 10;
 }
 
-.sidebar-title {
-  font-family: 'VT323', monospace;
-  font-size: 1.1rem;
-  color: var(--accent-green);
+.sidebar-header h3 {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-primary);
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
 }
 
 .sidebar-count {
   font-family: 'Courier Prime', monospace;
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.65rem;
+}
+
+.sidebar-content {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Individual document item - Windows list style */
+.sidebar-document {
+  background: #000;
+  border: none;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: move;
+  transition: background 0.1s ease;
+}
+
+.sidebar-document:hover {
+  background: #0a0a0a;
+}
+
+.sidebar-document.used {
+  opacity: 0.35;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+}
+
+.sidebar-document.used:hover {
+  background: #000;
+}
+
+/* Icon placeholder - will be replaced with image */
+.doc-icon-placeholder {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.doc-icon-img {
+  font-size: 0.9rem;
+  opacity: 0.5;
+}
+
+/* Document info */
+.doc-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.doc-id {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.7rem;
+  font-weight: 300;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-type {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.6rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  text-transform: lowercase;
+}
+
+/* Legacy classes for compatibility */
+.sidebar-title {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .documents-grid {
-  padding: 1rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0;
 }
 
 .document-item {
-  background: var(--dark-800);
-  border: 1px solid var(--border-color);
-  padding: 0.75rem;
+  background: #000;
+  border: none;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 0.6rem 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   cursor: move;
-  transition: all 0.2s;
-  border-radius: 0.25rem;
+  transition: background 0.1s ease;
 }
 
 .document-item.available:hover {
-  border-color: var(--accent-green);
-  background: var(--dark-700);
-  transform: translateX(2px);
+  background: #0a0a0a;
 }
 
 .document-item.used {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
+  filter: grayscale(100%);
 }
 
 .document-icon {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
+  opacity: 0.5;
 }
 
 .document-name {
   font-family: 'Courier Prime', monospace;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  font-size: 0.7rem;
+  font-weight: 300;
+  color: var(--text-primary);
   flex: 1;
   word-break: break-word;
 }
 
 .used-indicator {
   color: var(--accent-green);
-  font-size: 0.9rem;
+  font-size: 0.6rem;
 }
 
 .sidebar-warning {
@@ -2075,11 +2833,186 @@ nav a.active {
   }
 }
 
-/* Document Nodes - Computer format with cyan border */
+/* Document Nodes - Board window style (same as landing/missions) */
+.board-node-window {
+  min-width: 380px;
+  max-width: 500px;
+  font-family: 'Courier Prime', monospace;
+}
+
+/* Scanline effect on board nodes */
+.board-node-window::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Moving scanline bar on board nodes */
+.board-node-window::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(90, 127, 163, 0.1) 50%,
+      transparent 100%
+    );
+  background-size: 100% 200px;
+  pointer-events: none;
+  z-index: 99;
+  animation: scanlineMove 8s linear infinite;
+}
+
+/* Overlay window - same style as board nodes */
+.overlay-window {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(90, 127, 163, 0.5);
+  width: 90vw;
+  max-width: 900px;
+  min-width: 600px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Document overlay backdrop - blurs everything behind */
+.document-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
+/* Document overlay container - centers the window */
+.document-overlay-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  padding: 2rem;
+}
+
+.document-overlay-container .overlay-window {
+  pointer-events: all;
+}
+
+/* Overlay content - scrollable */
+.overlay-content {
+  max-height: calc(85vh - 32px); /* 85vh minus header height */
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+/* Answer input fields in submission overlay */
+.answer-input {
+  background: rgba(90, 127, 163, 0.1);
+  border: none;
+  border-bottom: 2px solid #5a7fa3;
+  color: #fff;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.95rem;
+  padding: 0.25rem 0.5rem;
+  min-width: 200px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.answer-input:focus {
+  background: rgba(90, 127, 163, 0.2);
+  border-bottom-color: #00ff41;
+  box-shadow: 0 2px 0 rgba(0, 255, 65, 0.3);
+}
+
+.answer-input::placeholder {
+  color: #5a7fa3;
+  opacity: 0.5;
+}
+
+.answer-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Submission overlay specific */
+.submission-overlay {
+  max-width: 800px;
+}
+
+/* Scanline effect on overlay */
+.overlay-window::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Moving scanline bar on overlay */
+.overlay-window::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(90, 127, 163, 0.1) 50%,
+      transparent 100%
+    );
+  background-size: 100% 200px;
+  pointer-events: none;
+  z-index: 99;
+  animation: scanlineMove 8s linear infinite;
+}
+
+/* Legacy class for compatibility */
 .document-node {
   background: var(--dark-900);
   border: 2px solid var(--board-accent);
-  min-width: 380px; /* Reduced a bit */
+  min-width: 380px;
   max-width: 500px;
   font-family: 'Courier Prime', monospace;
   box-shadow: 0 4px 12px rgba(var(--board-accent-rgb), 0.3);
@@ -2172,6 +3105,8 @@ nav a.active {
   max-height: 400px;
   overflow-y: auto;
   background: #000;
+  position: relative;
+  z-index: 101; /* Above scanlines */
 }
 
 /* Terminal-style document content - UNIFIED STYLE */
@@ -2416,7 +3351,7 @@ nav a.active {
   background: var(--bg-primary);
 }
 
-/* Connection Handles - VISIBLE ON TOP */
+/* Connection Handles - VISIBLE ON TOP - CRITICAL FOR EDGES */
 .connection-handle {
   width: 12px !important;
   height: 12px !important;
@@ -2425,8 +3360,9 @@ nav a.active {
   transition: all 200ms !important;
   border-radius: 0 !important; /* Square, not round */
   cursor: crosshair !important;
-  z-index: 100 !important; /* Make sure it's visible */
+  z-index: 1000 !important; /* MUST be above scanlines (z-index 100) */
   opacity: 1 !important;
+  pointer-events: all !important; /* Critical: make sure it receives clicks */
 }
 
 .connection-handle:hover {
@@ -2439,19 +3375,21 @@ nav a.active {
 .connection-handle-center {
   position: absolute !important;
   left: 50% !important;
-  top: 15px !important; /* Inside the cyan bar, centered vertically */
-  transform: translateX(-50%) !important;
-  z-index: 100 !important;
+  top: 10px !important; /* Centered in 32px header: (32 - 12) / 2 = 10px from top */
+  transform: translateX(-50%) !important; /* Center horizontally only */
+  z-index: 1000 !important; /* CRITICAL: Must be above scanlines */
+  pointer-events: all !important;
 }
 
-/* Make sure React Flow handles are visible */
+/* Make sure React Flow handles are visible and clickable */
 .react-flow__handle {
   width: 12px !important;
   height: 12px !important;
   background-color: var(--board-accent) !important;
   border: 2px solid #000 !important;
   border-radius: 0 !important;
-  z-index: 100 !important;
+  z-index: 1000 !important; /* MUST be above scanlines */
+  pointer-events: all !important; /* Critical for drag connections */
 }
 
 .react-flow__handle-top {

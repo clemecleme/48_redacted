@@ -16,99 +16,146 @@ export interface Mission {
   image?: string
 }
 
-// Document types - 12 evidence types
+// Document types - Based on Félix's Arxiv structure
 export type DocumentType = 
-  | 'email'             // Email message
-  | 'diary'             // Diary entry
-  | 'police_report'     // Police report
-  | 'badge'             // ID badge
-  | 'witness_statement' // Witness statement
-  | 'bank_statement'    // Bank statement
-  | 'newspaper'         // Newspaper page
-  | 'internal_memo'     // Internal memo
-  | 'phone_record'      // Phone call record
-  | 'receipt'           // Receipt
-  | 'surveillance_log'  // Surveillance log
-  | 'medical_record'    // Medical record
-  | 'article'           // Article (legacy)
-  | 'terminal'          // Terminal (legacy)
-  | 'image'             // Image (legacy)
+  | 'email'
+  | 'internal_memo'
+  | 'badge_log'
+  | 'surveillance_log'
+  | 'police_report'
+  | 'diary'
+  | 'bank_statement'
+  | 'receipt'
+  | 'witness_statement'
+  // Legacy types for backward compatibility
+  | 'newspaper'
+  | 'phone_record'
+  | 'medical_record'
+  | 'article'
+  | 'terminal'
+  | 'image'
 
 export type DocumentState = 'unopened' | 'onBoard'
 
-// Document content interface - holds all possible fields for all document types
+// Cipher info structure (for encrypted documents)
+export interface CipherInfo {
+  encrypted: boolean
+  cipher_type: 'vigenere' | 'caesar' | string
+  encrypted_sections?: string[]
+  hint?: string
+  key_hint?: string
+  key_location?: string
+}
+
+// Document content interface - Matches Félix's Arxiv JSON structure exactly
 export interface DocumentContent {
-  // Email fields
+  // Common fields
+  document_id?: string
+  document_type?: string
+  
+  // EMAIL fields
   from?: string
-  to?: string
+  to?: string | string[]  // Can be string or array
   subject?: string
-  emailDate?: string
-  emailTime?: string
   body?: string
-  cc?: string
-  bcc?: string
-  attachments?: string[]
+  timestamp?: string
   
-  // Diary fields
-  diaryDate?: string
-  diaryEntry?: string
-  mood?: string
-  weather?: string
+  // INTERNAL_MEMO fields
+  date?: string
+  content?: string
+  classification?: string
+  cipher_info?: CipherInfo
   
-  // Police Report fields
-  caseNumber?: string
-  reportDate?: string
-  reportTime?: string
-  officer?: string
-  badge?: string
-  incidentType?: string
+  // BADGE_LOG fields
+  facility_name?: string
+  log_period?: string
+  entries?: Array<{
+    badge_number: string
+    name: string
+    entry_time: string
+    location: string
+  }>
+  
+  // SURVEILLANCE_LOG fields
   location?: string
-  reportSummary?: string
-  witnessCount?: string
-  evidenceList?: string[]
+  operator?: string
+  entries?: Array<{
+    time: string
+    camera_id?: string
+    observation: string
+    action_taken: string
+  }>
   
-  // Badge fields
-  badgeId?: string
-  employeeName?: string
-  department?: string
-  position?: string
-  issueDate?: string
-  expiryDate?: string
-  accessLevel?: string
-  badgePhoto?: string
+  // POLICE_REPORT fields
+  case_number?: string
+  officer?: string
+  incident_description?: string
+  witnesses?: Array<{
+    name: string
+    role?: string
+    statement_summary?: string
+  }>
+  evidence_list?: Array<{
+    evidence_id: string
+    type: string
+    description: string
+  }>
+  has_red_herring?: boolean
+  red_herring_type?: string
   
-  // Witness Statement fields
-  witnessName?: string
-  witnessAddress?: string
-  statementDate?: string
-  statementTime?: string
-  interviewedBy?: string
-  statementText?: string
-  witnessSignature?: string
+  // DIARY fields
+  entry_text?: string
+  author?: string
+  mood?: string
   
-  // Bank Statement fields
-  accountNumber?: string
-  accountHolder?: string
-  statementPeriod?: string
-  openingBalance?: string
-  closingBalance?: string
+  // BANK_STATEMENT fields
+  account_holder?: string
+  account_number?: string
+  period?: string
+  opening_balance?: number
+  closing_balance?: number
   transactions?: Array<{
     date: string
     description: string
-    amount: string
-    balance: string
+    amount: number
+    balance: number
   }>
   
-  // Internal Memo fields
-  memoTo?: string
-  memoFrom?: string
-  memoDate?: string
-  memoSubject?: string
-  memoBody?: string
-  priority?: string
-  confidential?: boolean
+  // RECEIPT fields
+  merchant?: string
+  time?: string
+  items?: Array<{
+    item?: string
+    name?: string
+    quantity: number
+    price: number
+  }>
+  total?: number
+  payment_method?: string
+  transaction_id?: string
   
-  // Phone Record fields
+  // WITNESS_STATEMENT fields
+  witness_name?: string
+  statement_text?: string
+  signed?: boolean
+  
+  // Legacy/additional fields for backward compatibility
+  title?: string
+  description?: string
+  
+  // NEWSPAPER fields (legacy)
+  newspaperName?: string
+  volume?: string
+  issue?: string
+  price?: string
+  headline?: string
+  subheadline?: string
+  mainArticle?: string
+  articleText?: string
+  photoUrl?: string
+  photoCaption?: string
+  
+  // PHONE_RECORD fields (legacy)
   phoneNumber?: string
   callDuration?: string
   callDate?: string
@@ -121,67 +168,25 @@ export interface DocumentContent {
     type: string
   }>
   
-  // Receipt fields
-  storeName?: string
-  storeAddress?: string
-  receiptNumber?: string
-  receiptDate?: string
-  receiptTime?: string
-  items?: Array<{
-    name: string
-    quantity: string
-    price: string
-  }>
-  totalAmount?: string
-  paymentMethod?: string
-  
-  // Surveillance Log fields
-  surveillanceDate?: string
-  surveillanceLocation?: string
-  operator?: string
-  logEntries?: Array<{
-    time: string
-    activity: string
-    notes: string
-  }>
-  
-  // Medical Record fields
+  // MEDICAL_RECORD fields (legacy)
   patientName?: string
   medicalDate?: string
   doctorName?: string
   diagnosis?: string
   notes?: string
   
-  // Newspaper fields
-  newspaperName?: string
-  date?: string
-  volume?: string
-  issue?: string
-  price?: string
-  headline?: string
-  subheadline?: string
-  author?: string
-  mainArticle?: string
-  articleText?: string
-  photoUrl?: string
-  photoCaption?: string
-  
-  // Article fields (legacy)
+  // ARTICLE fields (legacy)
   heading?: string
   source?: string
   previewText?: string
   articleImage?: string
   
-  // Terminal fields (legacy)
+  // TERMINAL fields (legacy)
   terminalText?: string
   
-  // Image fields (legacy)
+  // IMAGE fields (legacy)
   imageUrl?: string
   caption?: string
-  
-  // Generic fields
-  title?: string
-  description?: string
 }
 
 // Document in sidebar

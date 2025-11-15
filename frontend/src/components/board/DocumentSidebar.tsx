@@ -16,7 +16,7 @@ const DocumentSidebar = ({ documents, onDragStart }: DocumentSidebarProps) => {
     <div className="document-sidebar">
       <div className="sidebar-header">
         <h3>EVIDENCE FILES</h3>
-        <div className="sidebar-count">{documents.length} ITEMS</div>
+        <div className="sidebar-count">{documents.length}</div>
       </div>
       
       <div className="sidebar-content">
@@ -28,14 +28,15 @@ const DocumentSidebar = ({ documents, onDragStart }: DocumentSidebarProps) => {
             onDragStart={(e) => onDragStart(e, doc)}
             onDoubleClick={() => handleDoubleClick(doc)}
           >
-            <div className="doc-icon">{doc.icon}</div>
-            <div className="doc-info">
-              <div className="doc-name">{doc.name}</div>
-              <div className="doc-type">[{doc.type.toUpperCase()}]</div>
+            {/* Icon placeholder - will be replaced with your image */}
+            <div className="doc-icon-placeholder">
+              <div className="doc-icon-img">📄</div>
             </div>
-            {doc.state === 'onBoard' && (
-              <div className="doc-status">ON BOARD</div>
-            )}
+            
+            {/* Document info */}
+            <div className="doc-info">
+              <div className="doc-id">{doc.id}</div>
+            </div>
           </div>
         ))}
       </div>
@@ -44,4 +45,3 @@ const DocumentSidebar = ({ documents, onDragStart }: DocumentSidebarProps) => {
 }
 
 export default DocumentSidebar
-

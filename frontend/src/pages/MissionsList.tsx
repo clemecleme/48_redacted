@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
-import Layout from '../components/layout/Layout'
 import MissionCard from '../components/mission/MissionCard'
 import { Mission } from '../types'
 import { getAllMissions } from '../utils/mockData'
@@ -42,18 +41,18 @@ const MissionsList = () => {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-2xl text-white">Loading missions...</div>
+      <div className="missions-page">
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-xl" style={{ color: '#5a7fa3' }}>Loading missions...</div>
         </div>
-      </Layout>
+      </div>
     )
   }
 
   return (
-    <Layout>
+    <div className="missions-page">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-main-color mb-8">Available Missions</h1>
+        <h1 className="text-4xl font-bold mb-8" style={{ color: '#5a7fa3' }}>Available Missions</h1>
 
         {/* Filter Tabs - TSUKI Style */}
         <div className="tab-navigation mb-8">
@@ -78,7 +77,7 @@ const MissionsList = () => {
         </div>
 
         {/* Missions Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="missions-grid">
           {filteredMissions.map((mission) => (
             <MissionCard 
               key={mission.id} 
@@ -89,12 +88,12 @@ const MissionsList = () => {
         </div>
 
         {filteredMissions.length === 0 && (
-          <div className="text-center text-gray-400 py-12">
+          <div className="text-center py-12" style={{ color: '#5a7fa3' }}>
             No {filter} missions available.
           </div>
         )}
       </div>
-    </Layout>
+    </div>
   )
 }
 

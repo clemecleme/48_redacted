@@ -239,8 +239,8 @@ const DocumentNode = memo(({ data, type }: NodeProps<DocumentNodeType['data']> &
   }
   
   return (
-    <div className="document-node terminal-style-node">
-      {/* Connection Handle - Top Center */}
+    <div className="landing-window board-node-window">
+      {/* Connection Handle - Top Center - MUST STAY ABOVE EVERYTHING */}
       <Handle 
         type="source" 
         position={Position.Top} 

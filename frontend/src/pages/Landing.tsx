@@ -1,37 +1,51 @@
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
-import Layout from '../components/layout/Layout'
 import WalletConnect from '../components/wallet/WalletConnect'
 
 const Landing = () => {
-  const { user } = useApp()
+  const { user, setUser } = useApp()
   const navigate = useNavigate()
 
-  return (
-    <Layout>
-      <div className="min-h-[80vh] flex items-center justify-center px-4">
-        <div className="max-w-2xl w-full text-center">
-          {/* Hero Section */}
-          <div className="mb-12 hero-section">
-            <h1 className="text-6xl font-bold mb-6 hero-title">TITLE</h1>
-            <p className="text-xl mb-8 hero-subtitle">solve the mystery</p>
-            <p className="text-gray-300 leading-relaxed mb-8">
-              Dive into time-limited investigations
-              <br />
-              based on evidences stored on Arxiv
-            </p>
-          </div>
+  const handleDemoMode = () => {
+    setUser({
+      address: '0xDemoUserAddress1234567890abcdef',
+      registeredMissions: ['mission-1', 'mission-4'],
+    })
+    navigate('/missions')
+  }
 
-          {/* Get Started Section */}
-          <div className="bg-dark-900 border border-main-color p-8">
-            <h2 className="text-2xl font-semibold mb-6 text-main-color">
-              Get Started
-            </h2>
-            <WalletConnect />
+  return (
+    <div className="landing-page">
+      {/* Demo Mode button - top right */}
+      <button
+        onClick={handleDemoMode}
+        className="demo-mode-floating"
+      >
+        Demo Mode
+      </button>
+
+      {/* Single central node */}
+      <div className="landing-window landing-window-center">
+        <div className="node-header">
+          <button className="node-close-button" onClick={(e) => e.preventDefault()}>×</button>
+          <div className="node-title">ACCESS PROTOCOL</div>
+        </div>
+        <div className="node-content" style={{ padding: '2.5rem 2rem', textAlign: 'center' }}>
+          <h1 className="font-bold mb-4" style={{ color: 'var(--text-primary)', fontSize: '6rem', lineHeight: '1' }}>48_REDACTED</h1>
+          <p className="text-xl mb-4" style={{ color: '#5a7fa3' }}>&gt; solve the quest</p>
+          <p className="text-sm mb-6" style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>
+            Time-limited investigations.<br />
+            Evidences stored on Arxiv.<br />
+            Kusama.
+          </p>
+          
+          {/* Wallet connection */}
+          <div style={{ marginTop: '2rem' }}>
+            <WalletConnect hideDemoMode={true} />
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   )
 }
 

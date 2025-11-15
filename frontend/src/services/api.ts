@@ -3,7 +3,7 @@ import axios from 'axios'
 // Re-export from mockData for convenience
 export { getAllMissions, getMissionById, getDocumentsForMission } from '../utils/mockData'
 
-// API base URL
+// API base URL (for future Arxiv integration)
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 // Create axios instance
@@ -23,7 +23,7 @@ export const setAuthToken = (walletAddress: string | null) => {
   }
 }
 
-// Authenticate wallet
+// Authenticate wallet (Ethereum address)
 export const authenticateWallet = async (walletAddress: string) => {
   console.log('Authenticating wallet:', walletAddress)
   return {
@@ -41,9 +41,13 @@ export const getMissionBoard = async (missionId: string) => {
   return []
 }
 
-// Submit answer
+// Submit answer (will be connected to Arxiv later)
 export const submitAnswer = async (missionId: string, answer: string) => {
   console.log('Submitting answer for mission:', missionId)
+  
+  // Future: Will send to Arxiv smart contract
+  // const response = await apiClient.post(`/missions/${missionId}/answer`, { answer })
+  
   return {
     success: true,
     message: 'Answer submitted successfully',

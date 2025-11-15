@@ -20,6 +20,7 @@ import { useApp } from '../contexts/AppContext'
 import DocumentNode from '../components/board/DocumentNode'
 import DocumentOverlay from '../components/board/DocumentOverlay'
 import DocumentSidebar from '../components/board/DocumentSidebar'
+import AnswerSubmission from '../components/board/AnswerSubmission'
 import SagEdge from '../components/board/SagEdge'
 import SagConnectionLine from '../components/board/SagConnectionLine'
 import { Document, DocumentNode as DocumentNodeType } from '../types'
@@ -60,6 +61,7 @@ const BoardPage = () => {
   const [mission, setMission] = useState<any>(null)
   const [selectedDocument, setSelectedDocument] = useState<DocumentNodeType | null>(null)
   const [accessDenied, setAccessDenied] = useState(false)
+  const [showSubmissionOverlay, setShowSubmissionOverlay] = useState(false)
 
   useEffect(() => {
     if (!user || !id) {
@@ -209,28 +211,28 @@ const BoardPage = () => {
   }
 
   return (
-    <div className="h-screen bg-dark-950 flex flex-col">
-      {/* Top Bar */}
-      <div className="bg-dark-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold text-white mb-1">{mission.title}</h1>
-          {mission.mainQuestion && (
-            <p className="text-sm text-gray-400">{mission.mainQuestion}</p>
-          )}
+    <div className="h-screen bg-dark-950 flex board-page">
+      {/* Document Sidebar */}
+      <DocumentSidebar documents={documents} onDragStart={onDragStart} />
+
+      {/* Board Column */}
+      <div className="flex-1 flex flex-col">
+        {/* Board Header */}
+        <div className="board-header">
+          <div className="board-header-left">
+            <h1 className="board-title">{mission.title}</h1>
+            {mission.mainQuestion && (
+              <p className="board-question">{mission.mainQuestion}</p>
+            )}
+          </div>
+
+          <button className="btn-primary" onClick={() => setShowSubmissionOverlay(true)}>
+            Submit Answer
+          </button>
         </div>
 
-        <button className="btn-primary">
-          Submit Answer
-        </button>
-      </div>
-
-      {/* Main Content: Sidebar + Board */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Document Sidebar */}
-        <DocumentSidebar documents={documents} onDragStart={onDragStart} />
-
         {/* React Flow Board */}
-        <div ref={reactFlowWrapper} className="flex-1" onDrop={onDrop} onDragOver={onDragOver}>
+        <div ref={reactFlowWrapper} className="flex-1 relative" onDrop={onDrop} onDragOver={onDragOver}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -246,19 +248,27 @@ const BoardPage = () => {
             fitView
             deleteKeyCode={null}
             connectionMode="loose"
+            minZoom={0.1}
+            maxZoom={2}
           >
             <Background color="#374151" gap={16} />
             <Controls />
-            <MiniMap />
+            <MiniMap 
+              style={{ 
+                width: '120px', 
+                height: '80px' 
+              }}
+              nodeColor="var(--board-accent)"
+              maskColor="rgba(0, 0, 0, 0.6)"
+            />
           </ReactFlow>
 
           {/* Empty board message */}
           {nodes.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="text-center text-gray-500">
-                <div className="text-6xl mb-4">📋</div>
-                <div className="text-xl mb-2">Drag documents from the sidebar to start investigating</div>
-                <div className="text-sm">Double-click nodes to view details • Right-click edges to delete</div>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 5 }}>
+              <div className="text-center max-w-md text-gray-400">
+                <div className="text-sm mb-1">Drag documents from the sidebar to start investigating</div>
+                <div className="text-xs">Double-click nodes to view details • Right-click edges to delete</div>
               </div>
             </div>
           )}
@@ -269,6 +279,13 @@ const BoardPage = () => {
       <DocumentOverlay
         document={selectedDocument}
         onClose={() => setSelectedDocument(null)}
+      />
+
+      {/* Answer Submission Overlay */}
+      <AnswerSubmission
+        missionId={id!}
+        isOpen={showSubmissionOverlay}
+        onClose={() => setShowSubmissionOverlay(false)}
       />
     </div>
   )
