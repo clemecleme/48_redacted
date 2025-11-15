@@ -14,8 +14,8 @@ const Landing = () => {
           <p className="text-xl mb-4" style={{ color: '#5a7fa3' }}>&gt; solve the quest</p>
           <p className="text-sm mb-6" style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>
             Time-limited investigations.<br />
-            Evidences stored on Arxiv.<br />
-            Kusama.
+            Evidence on Arxiv.<br />
+            Powered by Kusama.
           </p>
           
           {/* Wallet connection */}

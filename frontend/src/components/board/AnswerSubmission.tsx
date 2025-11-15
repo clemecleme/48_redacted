@@ -39,7 +39,6 @@ const AnswerSubmission = ({ missionId, onClose, isOpen }: AnswerSubmissionProps)
       const result = await submitAnswer(missionId, finalAnswer)
       if (result.success) {
         setSubmitted(true)
-        console.log('Answer submitted successfully:', result.submissionId)
       }
     } catch (err: any) {
       setError(err.message || 'Failed to submit answer')
@@ -203,7 +202,7 @@ const AnswerSubmission = ({ missionId, onClose, isOpen }: AnswerSubmissionProps)
                   <span style={{ fontSize: '1.5rem' }}>🔐</span>
                   <div style={{ fontSize: '0.85rem', color: '#b0b0b0', lineHeight: '1.5' }}>
                     <strong style={{ color: '#5a7fa3' }}>BLOCKCHAIN SUBMISSION:</strong><br />
-                    Your answer will be encrypted and stored on Kusama via Arxiv.<br />
+                    Your answer will be encrypted and submitted to Kusama blockchain.<br />
                     It cannot be changed once submitted.
                   </div>
                 </div>

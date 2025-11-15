@@ -25,7 +25,7 @@ export const setAuthToken = (walletAddress: string | null) => {
 
 // Authenticate wallet (Ethereum address)
 export const authenticateWallet = async (walletAddress: string) => {
-  console.log('Authenticating wallet:', walletAddress)
+  // TODO: Backend integration - POST /auth/wallet
   return {
     success: true,
     user: {
@@ -37,15 +37,14 @@ export const authenticateWallet = async (walletAddress: string) => {
 
 // Get mission board (returns empty - populated via drag & drop)
 export const getMissionBoard = async (missionId: string) => {
-  console.log('Fetching board for mission:', missionId)
+  // TODO: Backend integration - GET /mission/:id/board
   return []
 }
 
 // Submit answer (will be connected to Arxiv later)
 export const submitAnswer = async (missionId: string, answer: string) => {
-  console.log('Submitting answer for mission:', missionId)
-  
-  // Future: Will send to Arxiv smart contract
+  // TODO: Backend integration - POST /mission/:id/answer
+  // Will send encrypted answer to Arxiv smart contract
   // const response = await apiClient.post(`/missions/${missionId}/answer`, { answer })
   
   return {
