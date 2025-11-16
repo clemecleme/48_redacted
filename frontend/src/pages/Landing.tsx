@@ -10,12 +10,12 @@ const Landing = () => {
           <div className="node-title">ACCESS PROTOCOL</div>
         </div>
         <div className="node-content" style={{ padding: '2.5rem 2rem', textAlign: 'center' }}>
-          <h1 className="font-bold mb-4" style={{ color: 'var(--text-primary)', fontSize: '6rem', lineHeight: '1' }}>48_REDACTED</h1>
+          <h1 className="font-bold mb-4" style={{ color: 'var(--text-primary)', fontSize: '6rem', lineHeight: '1' }}>INFINITE CONSPIRACY</h1>
           <p className="text-xl mb-4" style={{ color: '#5a7fa3' }}>&gt; solve the quest</p>
           <p className="text-sm mb-6" style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>
             Time-limited investigations.<br />
             Evidence on Arxiv.<br />
-            Powered by Kusama.
+            Powered on Kusama.
           </p>
           
           {/* Wallet connection */}

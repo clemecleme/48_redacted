@@ -1,6 +1,6 @@
-# 48_REDACTED - Frontend
+# Infinite Conspiracy - Frontend
 
-React + TypeScript frontend for 48_REDACTED investigation game.
+React + TypeScript frontend for Infinite Conspiracy investigation game.
 
 ## Tech Stack
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides all the information needed to integrate the **48_REDACTED** frontend with a backend API.
+This document provides all the information needed to integrate the **Infinite Conspiracy** frontend with a backend API.
 
 **Frontend Status**: ✅ Fully functional with mock data, ready for integration  
 **Authentication**: MetaMask (Ethereum wallet address)  

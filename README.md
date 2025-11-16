@@ -1,12 +1,12 @@
 ![Landing Page](frontend/public/images/landing-page.png)
 
-# 48_REDACTED
+# Infinite Conspiracy
 
 A blockchain-based investigation game where players solve mysteries by analyzing evidence documents stored on Arxiv.
 
 ## Overview
 
-**48_REDACTED** is a detective game built for the Polkadot Sub0 Hackathon 2025. Players connect their wallet, register for time-limited investigation missions, explore evidence documents on an interactive board, and submit encrypted answers to solve conspiracies.
+**Infinite Conspiracy** is a detective game built for the Polkadot Sub0 Hackathon 2025. Players connect their wallet, register for time-limited investigation missions, explore evidence documents on an interactive board, and submit encrypted answers to solve conspiracies.
 
 ## Tech Stack
 
@@ -133,9 +133,6 @@ The frontend is fully functional with mock data and ready for integration. Key p
 
 See `BACKEND_INTEGRATION.md` for complete integration guide.
 
-## License
-
-MIT
 
 ---
 
